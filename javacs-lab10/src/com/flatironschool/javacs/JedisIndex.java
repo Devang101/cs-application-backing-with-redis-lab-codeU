@@ -89,10 +89,11 @@ public class JedisIndex {
 	public Map<String, Integer> getCounts(String term) {
         // FILL THIS IN!
 				HashMap<String, Integer> counts = new HashMap<String, Integer>();
+				Transaction t = jedis.multi();
 				for (String url : getURLs(term))
 				{
-					int termCount = getCount(url, term);
-					counts.put(url, termCount);
+					String termCount = t.hget(termCounterKey(url), term);
+					counts.put(url, new Integer(termCount));
 				}
 				return counts;
 	}
@@ -254,13 +255,10 @@ public class JedisIndex {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
 
-		index.printIndex();
-		System.out.println("Now loading");
 		// index.deleteTermCounters();
 		// index.deleteURLSets();
 		// index.deleteAllKeys();
 		loadIndex(index);
-		index.printIndex();
 
 		Map<String, Integer> map = index.getCounts("the");
 		for (Entry<String, Integer> entry: map.entrySet()) {
