@@ -89,10 +89,10 @@ public class JedisIndex {
 	public Map<String, Integer> getCounts(String term) {
         // FILL THIS IN!
 				HashMap<String, Integer> counts = new HashMap<String, Integer>();
-				Transaction t = jedis.multi();
+				//Transaction t = jedis.multi();
 				for (String url : getURLs(term))
 				{
-					String termCount = t.hget(termCounterKey(url), term);
+					String termCount = jedis.hget(termCounterKey(url), term);
 					counts.put(url, new Integer(termCount));
 				}
 				return counts;
